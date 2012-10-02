@@ -119,17 +119,15 @@ app =
     # these middleware run in the master process.
     use Shotgun::Static, public_dir if public_dir
     use Shotgun::SkipFavicon
+    use Rack::CommonLogger, STDERR  unless server.name =~ /CGI/
 
     # loader forks the child and runs the embedded config followed by the
     # application config.
     run Shotgun::Loader.new(config) {
       case env
       when 'development'
-        use Rack::CommonLogger, STDERR  unless server.name =~ /CGI/
         use Rack::ShowExceptions
         use Rack::Lint
-      when 'deployment', 'production'
-        use Rack::CommonLogger, STDERR  unless server.name =~ /CGI/
       end
     }
   end
