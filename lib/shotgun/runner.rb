@@ -39,11 +39,11 @@ module Shotgun
         }
 
         opts.on("-o", "--host HOST", "listen on HOST (default: 127.0.0.1)") { |host|
-          options[:Host] = host
+          @options[:Host] = host
         }
 
         opts.on("-p", "--port PORT", "use PORT (default: 9393)") { |port|
-          options[:Port] = port
+          @options[:Port] = port
         }
 
         opts.on("-E", "--env ENVIRONMENT", "use ENVIRONMENT for defaults (default: development)") { |e|
@@ -58,7 +58,7 @@ module Shotgun
         }
 
         opts.on("-u", "--url URL", "specify url path (default: /)") { |url|
-          options[:Path] = url
+          @options[:Path] = url
         }
 
         opts.on("-P", "--public PATH", "serve static files under PATH") { |path|
@@ -85,10 +85,10 @@ module Shotgun
       browse = false
       server = nil
       public_dir = 'public' if File.directory?('public')
-      options = {:Port => 9393, :Host => '127.0.0.1', :AccessLog => [], :Path => '/'}
+      @options = {:Port => 9393, :Host => '127.0.0.1', :AccessLog => [], :Path => '/'}
 
       opts = self.opts
-      options.merge! more_options unless options.empty?
+      options = @options.merge more_options
 
       config = ARGV[0] || "config.ru"
       abort "configuration #{config} not found" unless File.exist? config
