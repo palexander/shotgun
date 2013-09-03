@@ -3,6 +3,8 @@ require 'optparse'
 module Shotgun
   class Runner
     def self.opts
+      @options ||= {}
+
       opts = OptionParser.new("", 24, '  ') { |opts|
         opts.banner = "Usage: shotgun [ruby options] [rack options] [rackup config]"
 
@@ -47,7 +49,7 @@ module Shotgun
         }
 
         opts.on("-E", "--env ENVIRONMENT", "use ENVIRONMENT for defaults (default: development)") { |e|
-          env = e
+          @options[:env] = e
         }
 
         opts.separator ""
@@ -81,13 +83,14 @@ module Shotgun
     end
 
     def self.start(more_options = {})
-      env = ENV['RACK_ENV'] || 'development'
+      @options = {:Port => 9393, :Host => '127.0.0.1', :AccessLog => [], :Path => '/'}
+      opts = self.opts
+      
+      env = @options[:env] || ENV['RACK_ENV'] || 'development'
       browse = false
       server = nil
       public_dir = 'public' if File.directory?('public')
-      @options = {:Port => 9393, :Host => '127.0.0.1', :AccessLog => [], :Path => '/'}
 
-      opts = self.opts
       options = @options.merge more_options
 
       config = ARGV[0] || "config.ru"
